@@ -1,0 +1,6 @@
+D:\Windows\Documents\Projects\ImageClipboard\ImageClipboard\bin\Release\net8.0-windows\win-x64\publish\ImageClipboard.exe
+D:\Windows\Documents\Projects\ImageClipboard\ImageClipboard\bin\Release\net8.0-windows\win-x64\publish\ImageClipboard.dll
+D:\Windows\Documents\Projects\ImageClipboard\ImageClipboard\bin\Release\net8.0-windows\win-x64\publish\ImageClipboard.deps.json
+D:\Windows\Documents\Projects\ImageClipboard\ImageClipboard\bin\Release\net8.0-windows\win-x64\publish\ImageClipboard.runtimeconfig.json
+D:\Windows\Documents\Projects\ImageClipboard\ImageClipboard\bin\Release\net8.0-windows\win-x64\publish\ImageClipboard.pdb
+D:\Windows\Documents\Projects\ImageClipboard\ImageClipboard\bin\Release\net8.0-windows\win-x64\publish\SixLabors.ImageSharp.dll
