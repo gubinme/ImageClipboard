@@ -1,5 +1,4 @@
-﻿# ImageClipboard
-
+<img width="3000" height="1000" alt="banner_imageclipboard" src="https://github.com/user-attachments/assets/50fdda7d-1d3d-4777-b58c-9af16d4e1f8e" />
 A lightweight Windows tray app that shows a temporary preview whenever you copy an image — then lets you drag it into another app or onto the desktop.
 
 ## Features
