@@ -33,10 +33,15 @@ internal static class AutoStartManager
 
     public static void SyncWithSettings(AppSettings settings)
     {
-        var enabledInRegistry = IsEnabled();
-        if (settings.AutoStart != enabledInRegistry)
+        if (settings.AutoStart)
         {
-            SetEnabled(settings.AutoStart);
+            SetEnabled(true);
+            return;
+        }
+
+        if (IsEnabled())
+        {
+            SetEnabled(false);
         }
     }
 }

@@ -5,12 +5,12 @@
   },
   "projects": {
     "D:\\Windows\\Documents\\Projects\\ImageClipboard\\ImageClipboard\\ImageClipboard.csproj": {
-      "version": "1.0.0",
+      "version": "1.1.0",
       "restore": {
         "projectUniqueName": "D:\\Windows\\Documents\\Projects\\ImageClipboard\\ImageClipboard\\ImageClipboard.csproj",
         "projectName": "ImageClipboard",
         "projectPath": "D:\\Windows\\Documents\\Projects\\ImageClipboard\\ImageClipboard\\ImageClipboard.csproj",
-        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "packagesPath": "C:\\Users\\Admin\\AppData\\Local\\Temp\\cursor-sandbox-cache\\351407ac0fb5e2a770635c3e851354a1\\nuget",
         "outputPath": "D:\\Windows\\Documents\\Projects\\ImageClipboard\\ImageClipboard\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [

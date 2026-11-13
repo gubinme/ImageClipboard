@@ -110,36 +110,40 @@ internal sealed class TrayApplicationContext : ApplicationContext
     {
         monitorMenu.DropDownItems.Clear();
 
-        var selectedScreen = _settings.GetSelectedScreen();
-        var index = 1;
-
-        foreach (var screen in Screen.AllScreens)
+        var primaryItem = new ToolStripMenuItem("Основной монитор Windows")
         {
-            var isPrimary = screen.Primary;
-            var label = isPrimary
-                ? $"Монитор {index} (основной)"
-                : $"Монитор {index}";
+            Checked = _settings.UsePrimaryMonitor
+        };
+        primaryItem.Click += (_, _) =>
+        {
+            _settings.UsePrimaryMonitor = true;
+            _settings.Save();
+            RefreshMonitorMenu(monitorMenu);
+        };
+        monitorMenu.DropDownItems.Add(primaryItem);
+        monitorMenu.DropDownItems.Add(new ToolStripSeparator());
 
-            var item = new ToolStripMenuItem(label)
+        var index = 1;
+        foreach (var screen in MonitorHelper.GetOrderedScreens())
+        {
+            var fingerprint = MonitorHelper.GetFingerprint(screen);
+            var item = new ToolStripMenuItem(MonitorHelper.GetDisplayLabel(screen, index))
             {
-                Checked = screen.DeviceName == selectedScreen.DeviceName,
-                Tag = screen.DeviceName
+                Checked = !_settings.UsePrimaryMonitor && _settings.MonitorFingerprint == fingerprint,
+                Tag = fingerprint
             };
 
             item.Click += (_, _) =>
             {
-                if (item.Tag is not string deviceName)
+                if (item.Tag is not string selectedFingerprint)
                 {
                     return;
                 }
 
-                _settings.MonitorDeviceName = deviceName;
+                _settings.UsePrimaryMonitor = false;
+                _settings.MonitorFingerprint = selectedFingerprint;
                 _settings.Save();
-
-                foreach (ToolStripMenuItem sibling in monitorMenu.DropDownItems)
-                {
-                    sibling.Checked = ReferenceEquals(sibling, item);
-                }
+                RefreshMonitorMenu(monitorMenu);
             };
 
             monitorMenu.DropDownItems.Add(item);

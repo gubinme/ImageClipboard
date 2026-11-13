@@ -15,3 +15,4 @@ D:\Windows\Documents\Projects\ImageClipboard\ImageClipboard\obj\Release\net8.0-w
 D:\Windows\Documents\Projects\ImageClipboard\ImageClipboard\obj\Release\net8.0-windows\win-x64\ImageClipboard.pdb
 D:\Windows\Documents\Projects\ImageClipboard\ImageClipboard\obj\Release\net8.0-windows\win-x64\ImageClipboard.genruntimeconfig.cache
 D:\Windows\Documents\Projects\ImageClipboard\ImageClipboard\obj\Release\net8.0-windows\win-x64\ref\ImageClipboard.dll
+D:\Windows\Documents\Projects\ImageClipboard\ImageClipboard\obj\Release\net8.0-windows\win-x64\ImageClipboard.sourcelink.json

@@ -15,3 +15,4 @@ D:\Windows\Documents\Projects\ImageClipboard\ImageClipboard\obj\Debug\net8.0-win
 D:\Windows\Documents\Projects\ImageClipboard\ImageClipboard\obj\Debug\net8.0-windows\ImageClipboard.csproj.AssemblyReference.cache
 D:\Windows\Documents\Projects\ImageClipboard\ImageClipboard\bin\Debug\net8.0-windows\SixLabors.ImageSharp.dll
 D:\Windows\Documents\Projects\ImageClipboard\ImageClipboard\obj\Debug\net8.0-windows\ImageCli.EEFA748E.Up2Date
+D:\Windows\Documents\Projects\ImageClipboard\ImageClipboard\obj\Debug\net8.0-windows\ImageClipboard.sourcelink.json

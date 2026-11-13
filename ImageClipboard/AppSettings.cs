@@ -9,8 +9,15 @@ internal sealed class AppSettings
         "ImageClipboard",
         "settings.json");
 
+    public bool UsePrimaryMonitor { get; set; } = true;
+
+    public string MonitorFingerprint { get; set; } = string.Empty;
+
+    [Obsolete("Used only for migration from older versions.")]
     public string MonitorDeviceName { get; set; } = string.Empty;
+
     public bool AutoStart { get; set; } = true;
+
     public bool IsEnabled { get; set; } = true;
 
     public static AppSettings Load()
@@ -23,6 +30,7 @@ internal sealed class AppSettings
                 var settings = JsonSerializer.Deserialize<AppSettings>(json);
                 if (settings is not null)
                 {
+                    settings.MigrateLegacyMonitorSelection();
                     return settings;
                 }
             }
@@ -46,15 +54,36 @@ internal sealed class AppSettings
 
     public Screen GetSelectedScreen()
     {
-        if (!string.IsNullOrWhiteSpace(MonitorDeviceName))
+        if (UsePrimaryMonitor)
         {
-            var screen = Screen.AllScreens.FirstOrDefault(s => s.DeviceName == MonitorDeviceName);
-            if (screen is not null)
-            {
-                return screen;
-            }
+            return MonitorHelper.GetPrimaryScreen();
         }
 
-        return Screen.PrimaryScreen ?? Screen.AllScreens[0];
+        var screen = MonitorHelper.FindByFingerprint(MonitorFingerprint);
+        return screen ?? MonitorHelper.GetPrimaryScreen();
+    }
+
+    private void MigrateLegacyMonitorSelection()
+    {
+#pragma warning disable CS0618
+        if (string.IsNullOrWhiteSpace(MonitorDeviceName))
+        {
+            return;
+        }
+
+        var legacyScreen = Screen.AllScreens.FirstOrDefault(s => s.DeviceName == MonitorDeviceName);
+        if (legacyScreen is not null)
+        {
+            UsePrimaryMonitor = false;
+            MonitorFingerprint = MonitorHelper.GetFingerprint(legacyScreen);
+        }
+        else
+        {
+            UsePrimaryMonitor = true;
+            MonitorFingerprint = string.Empty;
+        }
+
+        MonitorDeviceName = string.Empty;
+#pragma warning restore CS0618
     }
 }
