@@ -153,17 +153,17 @@ internal sealed class ImagePreviewForm : Form
 
     private void OpenInDefaultViewer()
     {
+        // Arm forced close before launching the viewer so focus/hover races
+        // cannot pause or reset the countdown afterwards.
+        StartForcedCloseCountdown();
+
         try
         {
             ImageFileHelper.OpenWithDefaultViewer(GetMaterializedPath());
-
-            // После открытия во внешнем просмотрщике окно должно закрыться
-            // через 5 секунд вне зависимости от наведения/фокуса.
-            StartForcedCloseCountdown();
         }
         catch
         {
-            // Ignore viewer launch failures.
+            // Ignore viewer launch failures; countdown still runs.
         }
     }
 
@@ -223,10 +223,12 @@ internal sealed class ImagePreviewForm : Form
 
         BeginInvoke(() =>
         {
-            if (!IsCursorInsideForm())
+            if (_forceCloseCountdown || IsCursorInsideForm())
             {
-                ResetLifecycle();
+                return;
             }
+
+            ResetLifecycle();
         });
     }
 
@@ -295,13 +297,22 @@ internal sealed class ImagePreviewForm : Form
 
     private void PauseLifecycle()
     {
+        if (_forceCloseCountdown)
+        {
+            return;
+        }
+
         _isPaused = true;
         Opacity = 1;
     }
 
     private void ResetLifecycle()
     {
-        _forceCloseCountdown = false;
+        if (_forceCloseCountdown)
+        {
+            return;
+        }
+
         _isPaused = false;
         _elapsedMs = 0;
         Opacity = 1;
