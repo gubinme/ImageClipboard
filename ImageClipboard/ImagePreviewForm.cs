@@ -27,7 +27,6 @@ internal sealed class ImagePreviewForm : Form
     private bool _dragStarted;
     private int _elapsedMs;
     private bool _isPaused;
-    private bool _forceCloseCountdown;
     private bool _closeButtonHovered;
 
     public ImagePreviewForm(ClipboardImage clipboardImage, Screen screen, PreviewCorner corner)
@@ -153,18 +152,29 @@ internal sealed class ImagePreviewForm : Form
 
     private void OpenInDefaultViewer()
     {
-        // Arm forced close before launching the viewer so focus/hover races
-        // cannot pause or reset the countdown afterwards.
-        StartForcedCloseCountdown();
-
         try
         {
             ImageFileHelper.OpenWithDefaultViewer(GetMaterializedPath());
         }
         catch
         {
-            // Ignore viewer launch failures; countdown still runs.
+            // Ignore viewer launch failures.
         }
+
+        // Opening the viewer steals focus; keep the preview paused while the
+        // cursor is still over it so the close animation can be held as usual.
+        BeginInvoke(() =>
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
+
+            if (IsCursorInsideForm())
+            {
+                PauseLifecycle();
+            }
+        });
     }
 
     private string GetMaterializedPath()
@@ -206,29 +216,17 @@ internal sealed class ImagePreviewForm : Form
 
     private void HandlePointerEnter()
     {
-        if (_forceCloseCountdown)
-        {
-            return;
-        }
-
         PauseLifecycle();
     }
 
     private void HandlePointerLeave()
     {
-        if (_forceCloseCountdown)
-        {
-            return;
-        }
-
         BeginInvoke(() =>
         {
-            if (_forceCloseCountdown || IsCursorInsideForm())
+            if (!IsCursorInsideForm())
             {
-                return;
+                ResetLifecycle();
             }
-
-            ResetLifecycle();
         });
     }
 
@@ -297,32 +295,12 @@ internal sealed class ImagePreviewForm : Form
 
     private void PauseLifecycle()
     {
-        if (_forceCloseCountdown)
-        {
-            return;
-        }
-
         _isPaused = true;
         Opacity = 1;
     }
 
     private void ResetLifecycle()
     {
-        if (_forceCloseCountdown)
-        {
-            return;
-        }
-
-        _isPaused = false;
-        _elapsedMs = 0;
-        Opacity = 1;
-        _lifecycleTimer.Stop();
-        _lifecycleTimer.Start();
-    }
-
-    private void StartForcedCloseCountdown()
-    {
-        _forceCloseCountdown = true;
         _isPaused = false;
         _elapsedMs = 0;
         Opacity = 1;

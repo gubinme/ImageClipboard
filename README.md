@@ -7,7 +7,7 @@ A lightweight Windows tray app that shows a temporary preview whenever you copy 
 - Shows a floating preview in the bottom-right corner of the selected monitor
 - Auto-closes after 5 seconds (fades out after 3 seconds); hovering pauses the timer
 - Drag & drop from the preview window (desktop, browsers, messengers, editors)
-- Click the preview to open the image in your default Windows viewer (hover no longer pauses after that)
+- Click the preview to open the image in your default Windows viewer
 - Tray menu: enable/disable, monitor selection, preview corner, open install folder, start with Windows, exit
 - Supports PNG, JPEG, GIF (animated preview), WebP, BMP, TIFF, and more
 - No taskbar button for the tray app or the preview window
