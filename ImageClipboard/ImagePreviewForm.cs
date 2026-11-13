@@ -20,6 +20,7 @@ internal sealed class ImagePreviewForm : Form
     private readonly List<string> _tempFiles = [];
     private readonly ClipboardImage _clipboardImage;
     private readonly Image _image;
+    private readonly PreviewCorner _corner;
     private readonly EventHandler _onFrameChangedHandler;
     private string? _materializedPath;
     private Point _mouseDownPoint;
@@ -29,9 +30,10 @@ internal sealed class ImagePreviewForm : Form
     private bool _forceCloseCountdown;
     private bool _closeButtonHovered;
 
-    public ImagePreviewForm(ClipboardImage clipboardImage, Screen screen)
+    public ImagePreviewForm(ClipboardImage clipboardImage, Screen screen, PreviewCorner corner)
     {
         _clipboardImage = clipboardImage;
+        _corner = corner;
         _image = clipboardImage.Image ?? throw new ArgumentException("Clipboard image is empty.", nameof(clipboardImage));
         _onFrameChangedHandler = OnFrameChanged;
 
@@ -369,9 +371,14 @@ internal sealed class ImagePreviewForm : Form
     private void PositionOnScreen(Screen screen)
     {
         var workingArea = screen.WorkingArea;
-        Location = new Point(
-            workingArea.Right - Width - ScreenMargin,
-            workingArea.Bottom - Height - ScreenMargin);
+        var x = _corner is PreviewCorner.TopLeft or PreviewCorner.BottomLeft
+            ? workingArea.Left + ScreenMargin
+            : workingArea.Right - Width - ScreenMargin;
+        var y = _corner is PreviewCorner.TopLeft or PreviewCorner.TopRight
+            ? workingArea.Top + ScreenMargin
+            : workingArea.Bottom - Height - ScreenMargin;
+
+        Location = new Point(x, y);
     }
 
     private void ApplyRoundedShape()

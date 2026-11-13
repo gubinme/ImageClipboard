@@ -20,6 +20,8 @@ internal sealed class AppSettings
 
     public bool IsEnabled { get; set; } = true;
 
+    public PreviewCorner PreviewCorner { get; set; } = PreviewCorner.BottomRight;
+
     public static AppSettings Load()
     {
         try

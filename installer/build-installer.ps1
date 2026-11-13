@@ -5,6 +5,12 @@ try {
     $project = Join-Path $root "ImageClipboard\ImageClipboard.csproj"
 
     Write-Host "1/3 Publish..." -ForegroundColor Cyan
+    Get-Process ImageClipboard -ErrorAction SilentlyContinue | ForEach-Object {
+        Write-Host "Stopping ImageClipboard (PID $($_.Id))..." -ForegroundColor Yellow
+        Stop-Process -Id $_.Id -Force
+    }
+    Start-Sleep -Milliseconds 400
+
     dotnet publish $project -c Release -r win-x64 --self-contained false -p:PublishSingleFile=false
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet publish завершился с ошибкой ($LASTEXITCODE)."

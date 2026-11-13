@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace ImageClipboard;
 
 internal sealed class TrayApplicationContext : ApplicationContext
@@ -62,6 +64,10 @@ internal sealed class TrayApplicationContext : ApplicationContext
         RefreshMonitorMenu(monitorMenu);
         menu.Items.Add(monitorMenu);
 
+        var cornerMenu = new ToolStripMenuItem("Угол");
+        RefreshCornerMenu(cornerMenu);
+        menu.Items.Add(cornerMenu);
+
         var autoStartItem = new ToolStripMenuItem("Запускать с Windows")
         {
             Checked = _settings.AutoStart,
@@ -74,6 +80,10 @@ internal sealed class TrayApplicationContext : ApplicationContext
             _settings.Save();
         };
         menu.Items.Add(autoStartItem);
+
+        var openFolderItem = new ToolStripMenuItem("Открыть папку программы");
+        openFolderItem.Click += (_, _) => OpenInstallFolder();
+        menu.Items.Add(openFolderItem);
 
         menu.Items.Add(new ToolStripSeparator());
 
@@ -151,6 +161,32 @@ internal sealed class TrayApplicationContext : ApplicationContext
         }
     }
 
+    private void RefreshCornerMenu(ToolStripMenuItem cornerMenu)
+    {
+        cornerMenu.DropDownItems.Clear();
+
+        AddCornerItem(cornerMenu, "Слева сверху", PreviewCorner.TopLeft);
+        AddCornerItem(cornerMenu, "Справа сверху", PreviewCorner.TopRight);
+        AddCornerItem(cornerMenu, "Слева снизу", PreviewCorner.BottomLeft);
+        AddCornerItem(cornerMenu, "Справа снизу", PreviewCorner.BottomRight);
+    }
+
+    private void AddCornerItem(ToolStripMenuItem cornerMenu, string text, PreviewCorner corner)
+    {
+        var item = new ToolStripMenuItem(text)
+        {
+            Checked = _settings.PreviewCorner == corner,
+            Tag = corner
+        };
+        item.Click += (_, _) =>
+        {
+            _settings.PreviewCorner = corner;
+            _settings.Save();
+            RefreshCornerMenu(cornerMenu);
+        };
+        cornerMenu.DropDownItems.Add(item);
+    }
+
     private void OnImageCopied(object? sender, ClipboardImage clipboardImage)
     {
         if (!_settings.IsEnabled || clipboardImage is null)
@@ -173,7 +209,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
         ClosePreviewForm();
 
         var screen = _settings.GetSelectedScreen();
-        var preview = new ImagePreviewForm(clipboardImage, screen);
+        var preview = new ImagePreviewForm(clipboardImage, screen, _settings.PreviewCorner);
         preview.FormClosed += (_, _) =>
         {
             if (ReferenceEquals(_previewForm, preview))
@@ -198,6 +234,20 @@ internal sealed class TrayApplicationContext : ApplicationContext
         var form = _previewForm;
         _previewForm = null;
         form.Close();
+    }
+
+    private static void OpenInstallFolder()
+    {
+        var folder = AppContext.BaseDirectory.TrimEnd(
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar);
+
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = "explorer.exe",
+            Arguments = $"\"{folder}\"",
+            UseShellExecute = true
+        });
     }
 
     private void ShowAboutBalloon()
