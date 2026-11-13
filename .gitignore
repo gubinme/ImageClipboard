@@ -6,3 +6,7 @@ installer/output/
 *.pdb
 Thumbs.db
 .DS_Store
+*.nupkg
+*.suo
+*.userosscache
+project.lock.json
